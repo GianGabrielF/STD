@@ -16,23 +16,28 @@ public class App {
 
 
         try(Socket socket = new Socket(servidor, porta)){
+            String mensagem = "inicio";
             System.out.println("conectado no servidor...");
 
             // estabelecer fluxos de entrada e saída (I/O)
             BufferedReader entrada =  new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
             OutputStreamWriter saida = new OutputStreamWriter(socket.getOutputStream(), "UTF-8");
+            while(!mensagem.equals("fim")) {
             System.out.print(servidor + "> ");
 
-             String mensagem = teclado.nextLine();
-            saida.write(mensagem + "\n");
 
-            saida.flush();
 
-            String resposta = entrada.readLine();
+                mensagem = teclado.nextLine();
+                saida.write(mensagem + "\n");
 
-            System.out.println("servidor falou: " + resposta);
+                saida.flush();
+                if(!mensagem.equals( "fim")) {
+                    String resposta = entrada.readLine();
 
+                    System.out.println("servidor falou: " + resposta);
+                }
+            }
         }catch (Exception e){
             System.err.println("Erro: " + e.toString());
         }

@@ -1,8 +1,5 @@
 package engtelecom.std;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -16,8 +13,15 @@ public class App {
             while(true){
                 //aguardando por conexões de clientes
                 Socket cliente = serverSocket.accept();
-
-                 Thread t = new Thread(new ThreadServidor(cliente));
+                Thread t = null;
+                switch(args[0]) {
+                    case "1"-> {
+                     t = new Thread(new ThreadServidorFiles(cliente));
+                 }
+                 default -> {
+                     t = new Thread(new ThreadServidorConversa(cliente));
+                 }
+                }
 
 //                 disparando a thread
                  t.start();

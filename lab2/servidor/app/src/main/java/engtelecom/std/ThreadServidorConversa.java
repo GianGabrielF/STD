@@ -5,11 +5,11 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 
-public class ThreadServidor implements Runnable{
+public class ThreadServidorConversa implements Runnable{
 
     private Socket cliente;
 
-    public ThreadServidor(Socket cliente){
+    public ThreadServidorConversa(Socket cliente){
         this.cliente = cliente;
     }
 
@@ -23,13 +23,20 @@ public class ThreadServidor implements Runnable{
 
                 OutputStreamWriter saida = new OutputStreamWriter(cliente.getOutputStream(), "UTF-8");
 
+                String mensagem = "servidor";
 
-                String mensagem = entrada.readLine();
+                do {
+                    mensagem = entrada.readLine();
 
-                System.out.println(cliente.getInetAddress() + "> " + mensagem);
+                    if (!mensagem.equals( "fim")) {
+                        System.out.println(cliente.getInetAddress() + "> " + mensagem);
 
-                saida.write("Hallo, ich bin servidor \n");
-                saida.flush();
+                        saida.write("!2soquinhos \n");
+                        saida.flush();
+                    }
+                } while(!mensagem.equals( "fim"));
+                System.out.println("Cliente Desconectado: " + cliente.getInetAddress());
+
             } catch (Exception e) {
                 System.err.println("Erro: " + e.toString());
             }
