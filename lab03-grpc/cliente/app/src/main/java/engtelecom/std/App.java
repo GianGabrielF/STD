@@ -18,13 +18,37 @@ var juca = Pessoa.newBuilder().setNome("Juca")
 .setId(1)
 .addTelefones(NumeroTelefone.newBuilder().setNumero("48 3381-2800").setTipo(TipoTelefone.TRABALHO).
 build()).build();
+
+var maria = Pessoa.newBuilder().setNome("Maria")
+.setEmail("maria@email.com")
+.setId(2)
+.addTelefones(NumeroTelefone.newBuilder().setNumero("48 9926-7707").setTipo(TipoTelefone.TRABALHO).
+build()).build();
+
+var joao = Pessoa.newBuilder().setNome("João")
+.setEmail("joao@email.com")
+.setId(3)
+.addTelefones(NumeroTelefone.newBuilder().setNumero("48 9872-7212").setTipo(TipoTelefone.TRABALHO).
+build()).build();
+
+
+
 logger.info("Adicionando uma pessoa na agenda de contatos no servidor");
 var agendaBlockingStub = AgendaGrpc.newBlockingStub(channel);
 agendaBlockingStub.adicionar(juca);
+agendaBlockingStub.adicionar(maria);
+agendaBlockingStub.adicionar(joao);
+
 logger.info("Pessoa adicionada");
 logger.info("Buscando por uma pessoa na agenda de contatos");
 var resultado = agendaBlockingStub.buscar(juca);
 logger.info("Dados da pessoa retornada pelo servidor: " + resultado);
+ resultado = agendaBlockingStub.buscar(maria);
+logger.info("Dados da pessoa retornada pelo servidor: " + resultado);
+ resultado = agendaBlockingStub.buscar(joao);
+logger.info("Dados da pessoa retornada pelo servidor: " + resultado);
+
+
 logger.info("Finalizando...");
 channel.shutdownNow().awaitTermination(5, TimeUnit.SECONDS);
 }

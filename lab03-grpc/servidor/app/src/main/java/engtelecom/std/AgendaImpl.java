@@ -2,14 +2,21 @@ package engtelecom.std;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 import engtelecom.std.agenda.Pessoa;
 import engtelecom.std.agenda.Resposta;
 import io.grpc.stub.StreamObserver;
 import engtelecom.std.agenda.AgendaGrpc.AgendaImplBase;
+
+
+
 public class AgendaImpl extends AgendaImplBase {
 // Serviço de log para registrar as mensagens de depuração, informação, erro, etc.
 private static final Logger logger = Logger.getLogger(AgendaImpl.class.getName());
+
+private static AtomicInteger atomicInteger = new AtomicInteger();
+
 // Banco de dados para armazenar todos os contatos
 private Map<Integer, Pessoa> agenda;
 public AgendaImpl() {
@@ -18,6 +25,11 @@ this.agenda = new HashMap<>();
 @Override
 public void adicionar(Pessoa request, StreamObserver<Resposta> responseObserver) {
 String mensagem = "id do contato já existe no banco de dados";
+
+int novoId = atomicInteger.incrementAndGet();
+
+var outra = Pessoa.newBuilder(request).setId(novoId).build();
+
 if (!this.agenda.containsKey(request.getId())) {
 this.agenda.put(request.getId(), request);
 mensagem = "Contato com o id " + request.getId() + " foi adicionado com sucesso";
