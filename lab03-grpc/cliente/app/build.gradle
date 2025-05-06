@@ -1,0 +1,55 @@
+plugins {
+// Apply the application plugin to add support for building a CLI application in Java.
+id 'application'
+// Plugin for generating Java source files from Protocol Buffers (.proto) files.
+id "com.google.protobuf" version "0.9.5"
+}
+repositories {
+mavenCentral()
+}
+def grpcVersion = '1.72.0'
+def protobufVersion = '4.30.2'
+def protocVersion = protobufVersion
+dependencies {
+// https://mvnrepository.com/artifact/io.grpc/grpc-protobuf
+implementation "io.grpc:grpc-protobuf:${grpcVersion}"
+// https://mvnrepository.com/artifact/io.grpc/grpc-stub
+implementation "io.grpc:grpc-stub:${grpcVersion}"
+// https://mvnrepository.com/artifact/org.apache.tomcat/annotations-api
+compileOnly "org.apache.tomcat:annotations-api:6.0.53"
+// https://mvnrepository.com/artifact/io.grpc/grpc-netty-shaded
+runtimeOnly "io.grpc:grpc-netty-shaded:${grpcVersion}"
+// https://mvnrepository.com/artifact/com.google.protobuf/protobuf-java-util
+implementation "com.google.protobuf:protobuf-java-util:${protobufVersion}"
+// https://mvnrepository.com/artifact/io.grpc/grpc-testing
+testImplementation "io.grpc:grpc-testing:${grpcVersion}"
+// manter as demais dependências do projeto que foram criadas pelo assistente do Gradle
+}
+// Configuração do plugin protobuf
+protobuf {
+// Baixar o protoc deste repositório
+protoc { artifact = "com.google.protobuf:protoc:${protocVersion}" }
+// Compilador gRPC para java
+plugins { grpc { artifact = "io.grpc:protoc-gen-grpc-java:${grpcVersion}" } }
+// Configuração da tarefa para o compilador gRPC (saída padrão é Java)
+generateProtoTasks {
+all()*.plugins { grpc {} }
+}
+}
+// Para indicar para as IDEs onde estão as classes geradas a partir do arquivo .proto
+sourceSets {
+main {
+java {
+srcDirs 'build/generated/source/proto/main/grpc'
+srcDirs 'build/generated/source/proto/main/java'
+}
+}
+}
+application {
+// Define the main class for the application.
+mainClass = 'engtelecom.std.App'
+}
+tasks.named('test') {
+// Use JUnit Platform for unit tests.
+useJUnitPlatform()
+}
